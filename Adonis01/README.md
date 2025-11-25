@@ -1,12 +1,15 @@
 # Let's Start with Adonis JS
 
 ## Creating a new application
+
 ```
 npm init adonisjs@latest project-name
 ```
+
 ## Start the server
+
 ```
-npm run dev 
+npm run dev
 ```
 
 ## 1. What is ACE in AdonisJS?
@@ -22,6 +25,7 @@ node ace make:controller UsersController
 node ace migration:run
 node ace make:model User
 ```
+
 ACE helps you with:
 
 - Starting the server
@@ -30,13 +34,12 @@ ACE helps you with:
 - Running tests
 - Managing the app structure
 
-
 ## 2.What is YAPA in AdonisJS?
 
 **Yapa = Automatic tool kit → builds parts for you quickly**
 Backend-only small projects → Yapa is optional
 
-***Large projects / full-stack → Yapa helps speed up development***
+**_Large projects / full-stack → Yapa helps speed up development_**
 
 ### Why use Yapa?
 
@@ -53,10 +56,11 @@ Yapa can generate files for you:
 
 **2. Keeps code structure consistent**
 
- - Yapa follows AdonisJS conventions automatically.**
- - Helps maintain clean and organized project structure.
+- Yapa follows AdonisJS conventions automatically.\*\*
+- Helps maintain clean and organized project structure.
 
 **3. Speeds up repetitive tasks**
+
 - If you frequently create modules, controllers, or services, Yapa automates that.
 - Reduces typos and errors in file setup.
 
@@ -67,6 +71,7 @@ Yapa can generate files for you:
 - Yapa just makes life easier, especially in large projects.
 
 ### --Watch
+
 **Restart the server automatically**
 
 - When you change any backend file (routes, controllers, validators, etc.)
@@ -75,6 +80,7 @@ Yapa can generate files for you:
 - Works only for backend logic
 
 ### --hmr (Hot Module Reloading)
+
 **Restart server + auto-refresh front-end**
 
 It does everything --watch does PLUS:
@@ -86,11 +92,13 @@ It does everything --watch does PLUS:
 
 **Without HMR (using --watch)**
 You use it when developing the app:
+
 ```css
 node ace serve --watch
 /* or */
 node ace serve --hmr
 ```
+
 You update index.edge
 → You must manually refresh browser.
 
@@ -100,6 +108,7 @@ You update index.edge
 → Browser refreshes automatically.
 
 ## Which one should you use?
+
 If backend only (API development)
 
 - Use --watch
@@ -107,3 +116,56 @@ If backend only (API development)
 If full-stack with Edge, CSS, scripts
 
 - Use --hmr
+
+### Router in Adonis
+
+```js
+import router from '@adonisjs/core/services/router'
+import { HttpContext } from '@adonisjs/core/http'
+
+router.on('/').render('pages/home')
+```
+
+### router.on method
+
+router.on() is a routing method used to match a URL without specifying GET or POST.
+
+```js
+router.on('/').render('pages/home')
+```
+
+### router.get method
+
+```js
+router.get('/movies', async (ctx: HttpContext) => {
+  ctx.view.share({ movie: 'My Awesome Movie!' }) // we can share the value like this and received in movie.edge
+  return ctx.view.render('pages/movie', { new_movie: 'Is this new move ?' }) // render directly movie.edge
+})
+```
+
+`We can access get method like this`
+
+```js
+<body>
+  <h1>{{ movie }}</h1> // we can destructured value of movie directly
+  <h1>Hello from Movies </h1>
+  <h1>{{ new_movie }}</h1>
+</body>
+```
+
+**Some use case of get method**
+
+```js
+router.get('/movies/:id/:name', async (ctx: HttpContext) => {
+  const params = ctx.params
+  const id = ctx.params.id // provide the id
+  const name = ctx.params.name // provide the name
+  const url = ctx.request.url() // provide complete url: `/movies/101/anamul`
+  return {
+    id,
+    name,
+    url,
+    params,
+  }
+})
+```

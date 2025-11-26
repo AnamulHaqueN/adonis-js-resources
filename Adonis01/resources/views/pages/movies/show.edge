@@ -10,9 +10,12 @@
 </head>
 
 <body>
-    <h1>{{movie}}</h1> // we can destructured value of movie directly
-    <h1>Hello from Movies </h1>
-    <h1>{{new_movie}}</h1>
+    <nav>
+        <a href="/">Home</a>
+        <a href="{{route('movies.show', {slug: 'my-awesome-movie'})}}">My Awesome Movie</a>
+        <a href="{{route('movies.show', {slug: 'another-awesome-movie'})}}">Another Awesome Movie</a>
+    </nav>
+    {{{movie}}}
 </body>
 
 </html>

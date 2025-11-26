@@ -169,3 +169,174 @@ router.get('/movies/:id/:name', async (ctx: HttpContext) => {
   }
 })
 ```
+
+### .as('route_name')
+
+In AdonisJS, .as('home') assigns a name to the route so you can refer to it later without writing the full URL.
+
+**Example**
+
+```js
+router.on('/').render('pages/home').as('home')
+```
+
+- URL: /
+
+- View: pages/home
+
+- Route name: home
+
+### Why route names are useful ?
+
+1. Generate url inside views or controllers instead of hard-coding
+
+```ts
+route('home') // gives "/"
+route('movies') // gives "/movies"
+```
+
+In Edge template:
+
+```edge
+<a href="{{ route('home') }}">Home</a>
+```
+
+2. If the URL changes whole app still works
+
+### Slug
+
+A slug is a human-readable, URL-friendly text used to identify a resource in the URL instead of using an ID.
+
+**How slug works in a real example**
+**Route**
+
+```ts
+router.get('/movies/:slug', async ({ params }) => {
+  return `Movie slug is: ${params.slug}`
+})
+```
+
+**URL**
+
+```bash
+http://localhost:3333/movies/fast-and-furious-9
+```
+
+**Output:**
+
+```csharp
+Movie slug is: fast-and-furious-9
+```
+
+### Why we use slug instead of ID?
+
+1. SEO friendly - search engine prefered human readable URLs:
+
+```bash
+/movies/the-dark-knight
+```
+
+instead of:
+
+```bash
+/movies/2341
+```
+
+2. More user-friendly
+   user understand the page from URL.
+3. Good for sharable links
+   Easy to guess and share
+
+**Used Example:**
+routes.ts
+
+```ts
+router
+  .get('/movies/:slug', async (ctx: HttpContext) => {
+    ctx.view.share({ movie: 'My Awesome Movie!' }) // we can share the value like this and received in movie.edge
+    return ctx.view.render('pages/movies', {
+      new_movie: ctx.params.slug,
+    }) // render directly movie.edge
+  })
+  .as('movies.show')
+```
+
+views/pages/movies.edge
+
+```edge
+<body>
+  <nav>
+    <a href="/">Home</a>
+    <a href="{{ route('movies.show', {slug: 'my-awesome-movie'}) }}">My Awesome Movie</a>
+    <a href="{{ route('movies.show', {slug: 'another-awesome-movie'}) }}">Another Awesome Movie</a>
+  </nav>
+
+  <h1>
+    {{ new_movie }}
+  </h1>
+  // we can destructured value of movie directly
+  <h1>
+    {{ movie }}
+  </h1>
+</body>
+```
+
+**Output**
+`URL:`
+
+```bash
+http://localhost:3333/movies/mArhamm-er-movie
+```
+
+`result:`
+
+```bash
+Home My Awesome Movie Another Awesome Movie
+
+mArhamm-er-movie
+
+My Awesome Movie!
+```
+
+## Dynamic Routing with Slug-Based File Rendering
+
+`start/routes.ts`
+
+```ts
+import app from '@adonisjs/core/services/app'
+import router from '@adonisjs/core/services/router'
+import { HttpContext } from '@adonisjs/core/http'
+import fs from 'node:fs/promises'
+
+router
+  .get('/movies/:slug', async (ctx: HttpContext) => {
+    const url = app.makeURL(`resources/movies/${ctx.params.slug}.html`)
+    const movie = await fs.readFile(url, 'utf-8')
+    return ctx.view.render('pages/movies/show', { movie })
+  })
+  .as('movies.show')
+```
+
+`views/pages/movies/show.edge`
+
+```ts
+<body>
+    <nav>
+        <a href="/">Home</a>
+        <a href="{{route('movies.show', {slug: 'my-awesome-movie'})}}">My Awesome Movie</a>
+        <a href="{{route('movies.show', {slug: 'another-awesome-movie'})}}">Another Awesome Movie</a>
+    </nav>
+    {{{movie}}}
+</body>
+```
+
+`folder structure:`
+
+```bash
+- resources/movies  |-- another-awsome-movie.html
+                  |-- awesome-movie-the-trilogy.html
+                  |-- my-awesome-movie.html
+
+- views/pages/movies/show.edge
+- start/routes
+```

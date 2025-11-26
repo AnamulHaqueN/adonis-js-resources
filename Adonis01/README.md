@@ -333,10 +333,32 @@ router
 `folder structure:`
 
 ```bash
-- resources/movies  |-- another-awsome-movie.html
+- resources/movies|-- another-awsome-movie.html
                   |-- awesome-movie-the-trilogy.html
                   |-- my-awesome-movie.html
 
 - views/pages/movies/show.edge
 - start/routes
+```
+
+**Handling Error:** Provide custom error those routes files are not available using try and Catch block and also add http slug validator
+
+```ts
+router
+  .get('/movies/:slug', async (ctx: HttpContext) => {
+    const url = app.makeURL(`resources/movies/${ctx.params.slug}.html`)
+    try {
+      const movie = await fs.readFile(url, 'utf-8')
+      ctx.view.share({ movie })
+    } catch (error) {
+      throw new Exception(`Could not find a movie called ${ctx.params.slug}`, {
+        code: 'E_NOT_FOUND',
+        status: 404,
+      })
+    }
+    return ctx.view.render('pages/movies/show')
+  })
+  .as('movies.show')
+  .where('slug', router.matchers.slug())
+// .where('slug', /^[a-zA-Z0-9_-]+$/)
 ```

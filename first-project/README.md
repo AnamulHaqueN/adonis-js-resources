@@ -1,0 +1,94 @@
+## ORM(Object-Relational Mapping)
+
+It's a programming technique that helps us to interact with Relational database using object instead of writing raw SQL query
+
+- AdonisJS use model to interact with database through lucide ORM
+
+> Bridge between your code and the database
+
+- ORM maps **databse tables** -> **classes** and **rows** -> **object**
+
+**Benefits of ORM**
+
+1. Write less SQL
+
+2. Easier to read & maintain
+
+3. Database-agnostic
+
+4. Prevents SQL injection – Most ORMs handle query escaping automatically.
+
+Example(Node.js + AdonisJS Lucid ORM)
+
+```ts
+// Define a model
+class User extends BaseModel {}
+
+// Fetch all users
+const users = await User.all()
+
+// Find one user
+const user = await User.find(1)
+
+// Create a new user
+await User.create({ username: 'sakib', email: 'sakib@example.com' })
+
+// Update a user
+user.username = 'tamim'
+await user.save()
+
+// Delete a user
+await user.delete()
+```
+
+## Migration
+
+two method up() and down()
+
+**Up() method:**
+Define what should happen when we run migration. like Create table, add column, indexes
+
+`Example`
+
+```ts
+export default class CreateUsers {
+  async up(schema) {
+    await schema.createTable('users', (table) => {
+      table.increments('id')
+      table.string('username').notNullable()
+      table.timestamps()
+    })
+  }
+}
+```
+
+**Down() method:**
+Define how revert migration. It's use to rollback what we does in up() method. like Drop table, remove columns, delete indexes.
+
+`Example`
+
+```ts
+export default class CreateUsers {
+  async down(schema) {
+    await schema.dropTable('users')
+  }
+}
+```
+
+## How to connect with database using migration ?
+
+In your `.env` add this field
+
+```ts
+DB_USER = your_mysql_connection
+DB_PASSWORD = connection_password
+DB_DATABASE = databse_name // make sure this database exists
+```
+
+`After that use this command: `
+
+```ts
+node ace migration:run // create connection to database
+node ace migration:status // check connection status
+node ace migration:rollback // remove connection from database
+```

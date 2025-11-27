@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title }}</title>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+
+<body class="bg-gray-50 flex flex=col min-h-full">
+    <header class="flex flex-wrap sm:justify-start sm:flex-nowrap w-full bg-white text-sm py-4">
+        <nav class="w-full mx-auto px-4 sm:flex sm:items-center sm:justify-between" aria-label="Global">
+            <a class="flex-none text-xl font-semibold" href="/">Postie</a>
+
+            <div>
+                <a href="#">Landing</a>
+                <a href="#">Account</a>
+                <a href="#">Work</a>
+                <a href="#">Blog</a>
+            </div>
+
+        </nav>
+    </header>
+
+    <main class="grow">
+        {{{await $slots.main()}}}
+    </main>
+</body>
+
+</html>

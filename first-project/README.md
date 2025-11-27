@@ -43,7 +43,9 @@ await user.delete()
 
 ## Migration
 
-two method up() and down()
+_`Migrations` are used to `create` and `update` database tables using code._
+
+two method `up()` and `down()`
 
 **Up() method:**
 Define what should happen when we run migration. like Create table, add column, indexes
@@ -75,6 +77,11 @@ export default class CreateUsers {
 }
 ```
 
+**Migration vs Lucid ORM**
+
+Migration = Database structure (tables, columns)
+Lucid ORM = Database data (CRUD operations)
+
 ## How to connect with database using migration ?
 
 In your `.env` add this field
@@ -92,3 +99,18 @@ node ace migration:run // create connection to database
 node ace migration:status // check connection status
 node ace migration:rollback // remove connection from database
 ```
+
+## How to create singleton controller
+
+Recommended to use http controllers
+
+```ts
+node ace make:controller register -s
+it create this folder:
+create app/controllers/register_controller.ts
+```
+
+Controller has two methods:
+
+1. One for displaying the page that contain user registration form
+2. Other is process the registration form

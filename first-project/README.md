@@ -117,3 +117,42 @@ Controller has two methods:
 
 **{{csrfField()}}**
 when we submit a html form, AdonisJS needs a CSRF token to validate the submission.
+
+**VineJS**
+is Adonis JS official validator library - used to validate form input, API request and any other user submitted data
+
+> Vine JS check whether the user input is correct before submitting into databases.
+
+`Create validator:`
+
+```js
+node ace make:validator register
+```
+
+`this command create: app/validators/register.ts`
+
+### What is Cookie, Session and Session Cookie
+
+http is `stateless` .Every request it `forget` who you are. So we need a method to `remeber` the user after they `log in`. This works is done by them.
+
+**Cookie = browser storage**
+
+```js
+response.cookie('theme', 'dark')
+```
+
+**Session = server storage**
+
+```js
+{
+  "sessionId": "abcd1234",
+  "userId": 10,
+  "isLoggedIn": true
+}
+```
+
+**Session cookie = cookie that stores only session ID, not the actual data**
+
+```js
+Set-Cookie: sessionId=abcd1234; HttpOnly; Path=/;
+```

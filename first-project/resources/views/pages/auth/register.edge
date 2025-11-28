@@ -22,7 +22,27 @@
 
                             <input type="text" id="name" class="py-3 px-4 block w-full border border-gray-300 rounded-lg text-sm 
                                 focus:border-blue-500 focus:ring-blue-500 
-                                  disabled:opacity-50 disabled:pointer-events-none" name="name" required>
+                                  disabled:opacity-50 disabled:pointer-events-none" name="name" required
+                                value="{{old('name') || ''}}">
+
+                            @inputError('name')
+                            <p class="text-xs text-red-600 mt-2">{{$messages}}</p>
+                            @end
+                        </div>
+
+
+
+                        <div>
+                            <label for="username" class="block text-sm font-medium mb-2">User name</label>
+
+                            <input type="text" id="username" class="py-3 px-4 block w-full border border-gray-300 rounded-lg text-sm 
+                                focus:border-blue-500 focus:ring-blue-500 
+                                  disabled:opacity-50 disabled:pointer-events-none" name="username" required
+                                value="{{old('username') || ''}}">
+
+                            @inputError('username')
+                            <p class="text-xs text-red-600 mt-2">{{$messages}}</p>
+                            @end
                         </div>
 
                         <div>
@@ -30,7 +50,12 @@
 
                             <input type="email" id="email" class="py-3 px-4 block w-full border border-gray-300 rounded-lg text-sm 
                                 focus:border-blue-500 focus:ring-blue-500 
-                                  disabled:opacity-50 disabled:pointer-events-none" name="email" required>
+                                  disabled:opacity-50 disabled:pointer-events-none" name="email" required
+                                value="{{old('email') || ''}}">
+
+                            @inputError('email')
+                            <p class=" text-xs text-red-600 mt-2">{{$messages}}</p>
+                            @end
                         </div>
 
                         <div>
@@ -39,6 +64,9 @@
                             <input type="password" id="password" class="py-3 px-4 block w-full border border-gray-300 rounded-lg text-sm 
                                 focus:border-blue-500 focus:ring-blue-500 
                                   disabled:opacity-50 disabled:pointer-events-none" name="password" required>
+                            @inputError('password')
+                            <p class="text-xs text-red-600 mt-2">{{$messages}}</p>
+                            @end
                         </div>
 
                         <div>
@@ -48,6 +76,8 @@
                             <input type="password" id="confirm-password" class="py-3 px-4 block w-full border border-gray-300 rounded-lg text-sm 
                                 focus:border-blue-500 focus:ring-blue-500 
                                   disabled:opacity-50 disabled:pointer-events-none" name="confirm-password" required>
+
+
                         </div>
 
                         <div>

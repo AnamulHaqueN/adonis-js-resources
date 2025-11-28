@@ -112,5 +112,8 @@ create app/controllers/register_controller.ts
 
 Controller has two methods:
 
-1. One for displaying the page that contain user registration form
-2. Other is process the registration form
+1. One is `create()` use for displaying the page that contain user registration form
+2. Other is `store()` use for process the registration form
+
+**{{csrfField()}}**
+when we submit a html form, AdonisJS needs a CSRF token to validate the submission.

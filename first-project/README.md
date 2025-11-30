@@ -165,3 +165,100 @@ Set-Cookie: sessionId=abcd1234; HttpOnly; Path=/;
   node ace make:model Post -m
   // -m specifies to migration file
 ```
+
+## Posts
+
+1. Creating post Controller
+
+```js
+node ace make:controller post
+
+```
+
+2. Inside PostsController
+
+```js
+import type { HttpContext } from '@adonisjs/core/http'
+
+export default class PostsController {
+  async store() {
+    //
+  }
+}
+```
+
+3. Add Routes
+
+```js
+router.post('post', [PostsController, 'store'])
+```
+
+4. Create validator for Post
+
+```js
+node ace make:validator post
+```
+
+5. Add validation inside `app/validators/post.ts:`
+
+```js
+import vine from '@vinejs/vine'
+
+export const PostValidator = vine.compile(
+  vine.object({
+    content: vine.string().maxLength(1000),
+  })
+)
+```
+
+6. Complete code for store data in post_controller
+
+```js
+async store({ request, auth, session, response }: HttpContext) {
+    const { content } = await request.validateUsing(PostValidator)
+
+    // await Post.create({
+    //     content,
+    //     userId: auth.user!.id,
+    // })
+
+    await auth.user!.related('posts').create({ content })
+
+    session.flash({
+      notification: {
+        type: 'success',
+        message: 'Post created.',
+      },
+    })
+
+    return response.redirect().back()
+  }
+```
+
+7. complete code for `routes.ts`
+
+```ts
+router
+  .group(() => {
+    // for post
+    router.post('posts', [PostsController, 'store'])
+
+    router.delete('logout', [AuthController, 'destroy']) // this is not realted to post
+  })
+  .middleware(middleware.auth())
+```
+
+## Save the post in feed
+
+1. first make a controller
+
+```ts
+node ace make:controller feed -s
+
+```
+
+2. Create a route
+
+```ts
+router.get('/', [FeedController], 'index')
+```

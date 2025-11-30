@@ -31,6 +31,8 @@ router
 
     router.patch('posts/:id', [PostsController, 'update'])
 
+    router.delete('posts/:id', [PostsController, 'destroy'])
+
     router.delete('logout', [AuthController, 'destroy'])
   })
   .middleware(middleware.auth())

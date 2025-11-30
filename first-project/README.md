@@ -156,3 +156,12 @@ response.cookie('theme', 'dark')
 ```js
 Set-Cookie: sessionId=abcd1234; HttpOnly; Path=/;
 ```
+
+## Manually create Migration and Models
+
+### Create Models
+
+```js
+  node ace make:model Post -m
+  // -m specifies to migration file
+```

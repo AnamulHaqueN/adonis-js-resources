@@ -4,6 +4,7 @@ import Workspace from './workspace.js'
 import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import NoteHistory from './note_history.js'
 import Tag from './tag.js'
+import User from './user.js'
 
 export default class Note extends BaseModel {
   @column({ isPrimary: true })
@@ -11,6 +12,9 @@ export default class Note extends BaseModel {
 
   @column()
   declare workspace_id: number
+
+  @column()
+  declare userId: number
 
   @column()
   declare title: string
@@ -30,8 +34,12 @@ export default class Note extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 
-  @belongsTo(() => Workspace)
-  public workspace!: BelongsTo<typeof Workspace>
+  // Relations
+  @belongsTo(() => Workspace, { foreignKey: 'workspaceId' })
+  declare workspace: BelongsTo<typeof Workspace>
+
+  @belongsTo(() => User, { foreignKey: 'userId' })
+  declare creator: BelongsTo<typeof User>
 
   @manyToMany(() => Tag, { pivotTable: 'note_tags' })
   public tags!: ManyToMany<typeof Tag>

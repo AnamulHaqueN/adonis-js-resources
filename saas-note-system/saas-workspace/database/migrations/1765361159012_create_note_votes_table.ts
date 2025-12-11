@@ -8,10 +8,10 @@ export default class extends BaseSchema {
       table.increments('id')
       table.integer('note_id').unsigned().references('id').inTable('notes').onDelete('CASCADE')
       table
-        .integer('voter_company_id')
+        .integer('voter_user_id')
         .unsigned()
         .references('id')
-        .inTable('companies')
+        .inTable('users')
         .onDelete('CASCADE')
 
       table.enum('vote', ['up', 'down']).notNullable()

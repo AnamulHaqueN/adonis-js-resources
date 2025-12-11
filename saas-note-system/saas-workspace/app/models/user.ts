@@ -28,6 +28,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column({ serializeAs: null })
   declare password: string
 
+  // @column()
+  // declare confirmPassword: string
+
   @column()
   declare role: 'owner' | 'member'
 
@@ -42,4 +45,8 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare company: BelongsTo<typeof Company>
 
   static accessTokens = DbAccessTokensProvider.forModel(User)
+
+  public async verifyPassword(password: string) {
+    return hash.verify(this.password, password)
+  }
 }

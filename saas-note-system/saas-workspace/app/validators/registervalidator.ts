@@ -12,7 +12,5 @@ export const RegisterValidator = vine.compile(
       }),
     password: vine.string().confirmed({ confirmationField: 'confirmPassword' }),
     confirmPassword: vine.string(),
-    role: vine.enum(['owner', 'member']),
-    companyId: vine.number(),
   })
 )

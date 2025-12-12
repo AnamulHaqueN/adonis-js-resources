@@ -10,6 +10,7 @@
 const AuthController = () => import('#controllers/auth_controller')
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
+const WorkspacesController = () => import('#controllers/workspaces_controller')
 
 router.get('/', async () => {
   return {
@@ -25,4 +26,14 @@ router
     router.get('/me', [AuthController, 'me'])
     router.delete('/logout', [AuthController, 'logOut'])
   })
+  .use(middleware.auth())
+
+router
+  .group(() => {
+    router.post('', [WorkspacesController, 'store'])
+    router.get('', [WorkspacesController, 'index'])
+    router.put('/:id', [WorkspacesController, 'update'])
+    router.delete('/:id', [WorkspacesController, 'destroy'])
+  })
+  .prefix('/workspaces')
   .use(middleware.auth())

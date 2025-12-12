@@ -2,7 +2,6 @@ import Company from '#models/company'
 import User from '#models/user'
 import { RegisterValidator } from '#validators/registervalidator'
 import { HttpContext } from '@adonisjs/core/http'
-import { messages } from '@vinejs/vine/defaults'
 
 export default class AuthController {
   // REGISTER

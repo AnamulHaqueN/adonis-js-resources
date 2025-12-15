@@ -6,16 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>AdonisJS - A full featured web framework for Node.js </title>
 
-    @@vite(['resources/js/app.js'])
+    @vite(['resources/js/app.js'])
 </head>
 
 <body>
-    <nav>
-        <a href="/">Home</a>
-        <a href="{{route('movies.show', {slug: 'my-awesome-movie'})}}">My Awesome Movie</a>
-        <a href="{{route('movies.show', {slug: 'another-awesome-movie'})}}">Another Awesome Movie</a>
-    </nav>
-    {{{movie}}}
+    <div class="mt-16 ml-16">
+        <nav class="mb-4">
+            <a href="/">Home</a>
+            <a href="{{route('movies.show', {slug: 'my-awesome-movie'})}}">My Awesome Movie</a>
+            <a href="{{route('movies.show', {slug: 'another-awesome-movie'})}}">Another Awesome Movie</a>
+        </nav>
+        {{{movie}}}
+    </div>
 </body>
 
 </html>

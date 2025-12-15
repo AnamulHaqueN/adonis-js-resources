@@ -362,3 +362,17 @@ router
   .where('slug', router.matchers.slug())
 // .where('slug', /^[a-zA-Z0-9_-]+$/)
 ```
+
+## Setting Up Tailwind CSS
+
+[setup tailwind css] (https://tailwindcss.com/docs/installation/framework-guides/adonisjs)
+
+### add markdown to replace html files
+
+```bash
+npm i @dimerapp/markdown
+
+`change inside router`
+  const url = app.makeURL(`resources/movies/${ctx.params.slug}.md`)
+
+```

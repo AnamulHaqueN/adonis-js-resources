@@ -12,6 +12,7 @@ import router from '@adonisjs/core/services/router'
 import { HttpContext } from '@adonisjs/core/http'
 import fs from 'node:fs/promises'
 import { Exception } from '@adonisjs/core/exceptions'
+import { middleware } from './kernel.js'
 
 router.on('/').render('pages/home').as('home')
 // router.get('/movies/:slug', async ({ params }) => {
@@ -20,7 +21,7 @@ router.on('/').render('pages/home').as('home')
 
 router
   .get('/movies/:slug', async (ctx: HttpContext) => {
-    const url = app.makeURL(`resources/movies/${ctx.params.slug}.html`)
+    const url = app.makeURL(`resources/movies/${ctx.params.slug}.md`)
     try {
       const movie = await fs.readFile(url, 'utf-8')
       ctx.view.share({ movie })
@@ -62,3 +63,10 @@ router.post('/movies', async ({ request }) => {
 // router.get('movies/my-awsome-movie/edit', () => {}).as('movies.update')
 // router.put('movies/my-awsome-movie', () => {}).as('movies.update')
 // router.delete('/movies/my-awsome-movie', () => {}).as('movies.destroy')
+
+router.get('/anam', async ({ request }) => {
+  console.log(request.types())
+  return {
+    ip: request.types(),
+  }
+})

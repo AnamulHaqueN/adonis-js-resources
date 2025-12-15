@@ -1,5 +1,5 @@
 {
-  "name": "Adonis01",
+  "name": "adonis01",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -40,12 +40,16 @@
     "@japa/plugin-adonisjs": "^4.0.0",
     "@japa/runner": "^4.2.0",
     "@swc/core": "1.11.24",
+    "@tailwindcss/vite": "^4.1.17",
     "@types/luxon": "^3.7.1",
     "@types/node": "^22.15.18",
+    "autoprefixer": "^10.4.22",
     "eslint": "^9.26.0",
     "hot-hook": "^0.4.0",
     "pino-pretty": "^13.0.0",
+    "postcss": "^8.5.6",
     "prettier": "^3.5.3",
+    "tailwindcss": "^4.1.17",
     "ts-node-maintained": "^10.9.5",
     "typescript": "~5.8",
     "vite": "^6.3.5"
@@ -58,6 +62,7 @@
     "@adonisjs/shield": "^8.2.0",
     "@adonisjs/static": "^1.1.1",
     "@adonisjs/vite": "^4.0.0",
+    "@dimerapp/markdown": "^8.0.1",
     "@vinejs/vine": "^3.0.1",
     "edge.js": "^6.2.1",
     "luxon": "^3.7.2",
@@ -70,5 +75,12 @@
       "./app/middleware/*.ts"
     ]
   },
-  "prettier": "@adonisjs/prettier-config"
+  "prettier": "@adonisjs/prettier-config",
+  "description": "``` npm init adonisjs@latest project-name ```",
+  "main": "ace.js",
+  "directories": {
+    "test": "tests"
+  },
+  "keywords": [],
+  "author": ""
 }

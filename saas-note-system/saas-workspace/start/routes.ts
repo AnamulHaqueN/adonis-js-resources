@@ -10,6 +10,7 @@
 const AuthController = () => import('#controllers/auth_controller')
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
+const NoteVotesController = () => import('#controllers/note_votes_controller')
 const NotesController = () => import('#controllers/notes_controller')
 const WorkspacesController = () => import('#controllers/workspaces_controller')
 
@@ -50,3 +51,6 @@ router
     router.delete('/notes/:id', [NotesController, 'destroy'])
   })
   .use(middleware.auth())
+
+// Votes count
+router.post('/notes/:id/vote', [NoteVotesController, 'vote']).use(middleware.auth())

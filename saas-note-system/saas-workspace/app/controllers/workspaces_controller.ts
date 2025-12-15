@@ -1,6 +1,5 @@
 import Workspace from '#models/workspace'
 import type { HttpContext } from '@adonisjs/core/http'
-import { messages } from '@vinejs/vine/defaults'
 
 export default class WorkspacesController {
   // Create workspaces any login user can create

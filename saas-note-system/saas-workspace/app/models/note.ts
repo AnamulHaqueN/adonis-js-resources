@@ -5,13 +5,14 @@ import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relat
 import NoteHistory from './note_history.js'
 import Tag from './tag.js'
 import User from './user.js'
+import type { NoteType } from '../types/note.js'
 
 export default class Note extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
-  @column()
-  declare workspace_id: number
+  @column({ columnName: 'workspace_id' })
+  declare workspaceId: number
 
   @column()
   declare userId: number
@@ -22,11 +23,11 @@ export default class Note extends BaseModel {
   @column()
   declare content: string
 
-  @column()
-  declare note_type: 'public' | 'private'
+  @column({ columnName: 'note_type' })
+  declare noteType: NoteType
 
-  @column()
-  declare is_draft: boolean
+  @column({ columnName: 'is_draft' })
+  declare isDraft: boolean
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

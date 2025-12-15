@@ -19,16 +19,17 @@ router.get('/', async () => {
   }
 })
 
-router.post('/register', [AuthController, 'register'])
-router.post('/login', [AuthController, 'login'])
-
+// All auth router
 router
   .group(() => {
+    router.post('/register', [AuthController, 'register'])
+    router.post('/login', [AuthController, 'login'])
     router.get('/me', [AuthController, 'me'])
     router.delete('/logout', [AuthController, 'logOut'])
   })
   .use(middleware.auth())
 
+// All Workspace router
 router
   .group(() => {
     router.post('', [WorkspacesController, 'store'])
@@ -39,8 +40,13 @@ router
   .prefix('/workspaces')
   .use(middleware.auth())
 
+// All Notes router
 router
   .group(() => {
     router.post('/notes', [NotesController, 'store'])
+    router.get('/notes', [NotesController, 'list'])
+    router.get('/notes/:id', [NotesController, 'show'])
+    router.put('/notes/:id', [NotesController, 'update'])
+    router.delete('/notes/:id', [NotesController, 'destroy'])
   })
   .use(middleware.auth())

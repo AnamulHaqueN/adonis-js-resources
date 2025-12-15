@@ -40,11 +40,11 @@ export default class AuthController {
       const user = await User.verifyCredentials(email, password)
       const token = await auth.use('api').createToken(user)
 
-      return {
+      response.cookie('token', token.value!.release())
+      return response.ok({
         message: 'Login successful',
-        token: token,
-        user: user.serialize(),
-      }
+        user: user,
+      })
     } catch (error) {
       console.log(error)
       return response.unauthorized('Invalid email or password')

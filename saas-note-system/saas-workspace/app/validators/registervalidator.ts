@@ -6,6 +6,7 @@ export const RegisterValidator = vine.compile(
     email: vine
       .string()
       .email()
+      .toLowerCase()
       .unique(async (db, value) => {
         const existing = await db.from('users').where('email', value).first()
         return existing ? false : true

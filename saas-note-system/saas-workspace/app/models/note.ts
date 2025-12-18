@@ -6,6 +6,7 @@ import NoteHistory from './note_history.js'
 import Tag from './tag.js'
 import User from './user.js'
 import type { NoteType } from '../types/note.js'
+import NoteVote from './note_vote.js'
 
 export default class Note extends BaseModel {
   @column({ isPrimary: true })
@@ -44,6 +45,9 @@ export default class Note extends BaseModel {
 
   @manyToMany(() => Tag, { pivotTable: 'note_tags' })
   public tags!: ManyToMany<typeof Tag>
+
+  @hasMany(() => NoteVote)
+  public votes!: HasMany<typeof NoteVote>
 
   @hasMany(() => NoteHistory)
   public history!: HasMany<typeof NoteHistory>

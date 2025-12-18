@@ -46,6 +46,7 @@ export default class NotesController {
       const note = await Note.query()
         .where('id', params.id)
         .preload('creator')
+        .preload('workspace')
         .preload('tags')
         .first()
 
@@ -71,13 +72,29 @@ export default class NotesController {
         .whereHas('workspace', (workspaceQuery) => {
           workspaceQuery.where('company_id', user.companyId)
         })
+        .preload('votes')
         .preload('workspace')
         .preload('creator')
         .preload('tags')
 
+      // Map notes to include upvote and downvote count
+      const formatteNotes = notes.map((note) => {
+        const upvotes = note.votes.filter((v) => v.vote === 'up').length
+        const downvotes = note.votes.filter((v) => v.vote === 'down').length
+
+        return {
+          ...note.serialize(),
+          upvotes,
+          downvotes,
+        }
+      })
+
       return response.ok({
-        message: notes.length ? 'List of Notes' : 'Notes is empty',
-        notes: notes.map((note) => note.serialize()),
+        message: 'List of Notes',
+        notes: formatteNotes,
+        // message: notes.length ? 'List of Notes' : 'Notes is empty',
+
+        // notes: notes.map((note) => note.serialize()),
       })
     } catch (error) {
       console.log(error)

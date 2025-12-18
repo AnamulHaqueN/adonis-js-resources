@@ -1,5 +1,6 @@
 import Company from '#models/company'
 import User from '#models/user'
+import { LoginValidator } from '#validators/loginvalidator'
 import { RegisterValidator } from '#validators/registervalidator'
 import { HttpContext } from '@adonisjs/core/http'
 
@@ -26,21 +27,32 @@ export default class AuthController {
       const user = await User.create(userData)
 
       return response.created({ user })
-    } catch (error) {
+    } catch (error: any) {
       console.log(error)
-      return response.badRequest({ errors: error.messages || error })
+      // Vine validation errors
+      if (error?.errors) {
+        return response.badRequest({ errors: error.errors })
+      }
+      return response.badRequest({
+        errors: [{ field: 'general', message: error.message || 'Registration failed' }],
+      })
     }
   }
 
   // LOGIN
   public async login({ request, auth, response }: HttpContext) {
-    const { email, password } = request.only(['email', 'password'])
+    const payload = await request.validateUsing(LoginValidator)
 
     try {
-      const user = await User.verifyCredentials(email, password)
+      const user = await User.verifyCredentials(payload.email, payload.password)
       const token = await auth.use('api').createToken(user)
 
-      response.cookie('token', token.value!.release())
+      response.cookie('token', token.value!.release(), {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: false,
+        path: '/',
+      })
       return response.ok({
         message: 'Login successful',
         user: user,
@@ -67,7 +79,12 @@ export default class AuthController {
   // me
   public async me({ auth, response }: HttpContext) {
     try {
+      await auth.authenticate()
+
       const user = auth.user!
+
+      await user.load('company')
+
       return response.ok({
         message: 'User info fetched successfully !',
         user: {
@@ -76,6 +93,7 @@ export default class AuthController {
           email: user.email,
           role: user.role,
           companyId: user.companyId,
+          companyName: user.company.name,
           createdAt: user.createdAt,
         },
       })

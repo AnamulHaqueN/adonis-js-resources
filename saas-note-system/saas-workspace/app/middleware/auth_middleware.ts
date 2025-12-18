@@ -20,12 +20,13 @@ export default class AuthMiddleware {
     } = {}
   ) {
     // Extract token from HTTP-only cookie
-    // const token = ctx.request.cookie('token')
+    const token = ctx.request.cookie('token')
+    // console.log('Token from cookie', token)
 
-    // if (token) {
-    //   // IMPORTANT: Set the Authorization header so AdonisJS auth can read it
-    //   ctx.request.request.headers.authorization = `Bearer ${token}`
-    // }
+    if (token && !ctx.request.header('authorization')) {
+      // IMPORTANT: Set the Authorization header so AdonisJS auth can read it
+      ctx.request.request.headers.authorization = `Bearer ${token}`
+    }
     await ctx.auth.authenticateUsing(options.guards, { loginRoute: this.redirectTo })
     return next()
   }

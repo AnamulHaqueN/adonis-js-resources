@@ -1,8 +1,10 @@
-const API_URL = "http://localhost:3333";
+import api from "./axios";
 
 export type NoteType = "public" | "private";
 
 export type Note = {
+  upvotes: number;
+  downvotes: number;
   id: number;
   title: string;
   content: string;
@@ -14,17 +16,17 @@ export type Note = {
 };
 
 export const getNotes = async () => {
-  const res = await fetch(`${API_URL}/notes`, {
-    credentials: "include",
+  const res = await api.get("/notes", {
+    withCredentials: true,
   });
-  return res.json();
+  return res.data;
 };
 
 export const getNoteById = async (id: number) => {
-  const res = await fetch(`${API_URL}/notes/${id}`, {
-    credentials: "include",
+  const res = await api.get(`/notes/${id}`, {
+    withCredentials: true,
   });
-  return res.json();
+  return res.data;
 };
 
 export const createNote = async (data: {
@@ -33,32 +35,29 @@ export const createNote = async (data: {
   noteType: NoteType;
   workspaceId: number;
 }) => {
-  const res = await fetch(`${API_URL}/notes`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify(data),
+  const res = await api.post("/notes", data, {
+    withCredentials: true,
   });
-  return res.json();
+  return res.data;
 };
 
 export const updateNote = async (
   id: number,
-  data: { title: string; content: string; noteType: NoteType }
+  data: {
+    title: string;
+    content: string;
+    noteType: NoteType;
+  }
 ) => {
-  const res = await fetch(`${API_URL}/notes/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify(data),
+  const res = await api.put(`/notes/${id}`, data, {
+    withCredentials: true,
   });
-  return res.json();
+  return res.data;
 };
 
 export const deleteNote = async (id: number) => {
-  const res = await fetch(`${API_URL}/notes/${id}`, {
-    method: "DELETE",
-    credentials: "include",
+  const res = await api.delete(`/notes/${id}`, {
+    withCredentials: true,
   });
-  return res.json();
+  return res.data;
 };

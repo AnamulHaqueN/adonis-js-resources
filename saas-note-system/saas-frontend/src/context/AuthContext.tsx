@@ -6,6 +6,8 @@ type User = {
     name: string
     email: string
     role: 'owner' | 'member'
+    companyId: number
+    companyName: string
 }
 
 type RegisterPayload = {

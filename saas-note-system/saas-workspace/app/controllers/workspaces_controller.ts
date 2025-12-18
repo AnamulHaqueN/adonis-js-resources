@@ -1,4 +1,5 @@
 import Workspace from '#models/workspace'
+import { WorkspaceValidator } from '#validators/workspacevalidator'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class WorkspacesController {
@@ -6,11 +7,10 @@ export default class WorkspacesController {
   public async store({ auth, request, response }: HttpContext) {
     try {
       const user = auth.user!
-
-      const data = request.only(['name'])
+      const payload = await request.validateUsing(WorkspaceValidator)
 
       const workspace = await Workspace.create({
-        name: data.name,
+        name: payload.name,
         companyId: user.companyId,
         userId: user.id,
       })
@@ -20,8 +20,8 @@ export default class WorkspacesController {
         workspace,
       })
     } catch (error) {
-      console.log(error)
-      return response.unauthorized('Not authenticated.')
+      //console.log(error)
+      return response.badRequest({ errors: error.messages || error })
     }
   }
 
@@ -63,7 +63,8 @@ export default class WorkspacesController {
         return response.forbidden('You are not allow to update this workspace')
       }
 
-      workspace.merge(request.only(['name']))
+      const payload = await request.validateUsing(WorkspaceValidator)
+      workspace.merge(payload)
       await workspace.save()
 
       return response.ok({
@@ -71,8 +72,8 @@ export default class WorkspacesController {
         workspace,
       })
     } catch (error) {
-      console.log(error)
-      return response.unauthorized('Not authenticated')
+      //console.log(error)
+      return response.badRequest({ errors: error.messages || error })
     }
   }
 

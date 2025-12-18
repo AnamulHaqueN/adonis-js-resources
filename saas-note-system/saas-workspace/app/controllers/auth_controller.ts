@@ -10,6 +10,7 @@ export default class AuthController {
     try {
       const payload = await request.validateUsing(RegisterValidator)
       const domain = request.hostname()
+
       console.log(domain)
       const company = await Company.findBy('name', domain)
       if (!company) {

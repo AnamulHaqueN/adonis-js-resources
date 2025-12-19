@@ -16,16 +16,12 @@ export type Note = {
 };
 
 export const getNotes = async () => {
-  const res = await api.get("/notes", {
-    withCredentials: true,
-  });
+  const res = await api.get("/notes", {});
   return res.data;
 };
 
 export const getNoteById = async (id: number) => {
-  const res = await api.get(`/notes/${id}`, {
-    withCredentials: true,
-  });
+  const res = await api.get(`/notes/${id}`, {});
   return res.data;
 };
 
@@ -35,9 +31,7 @@ export const createNote = async (data: {
   noteType: NoteType;
   workspaceId: number;
 }) => {
-  const res = await api.post("/notes", data, {
-    withCredentials: true,
-  });
+  const res = await api.post("/notes", data, {});
   return res.data;
 };
 
@@ -49,15 +43,11 @@ export const updateNote = async (
     noteType: NoteType;
   }
 ) => {
-  const res = await api.put(`/notes/${id}`, data, {
-    withCredentials: true,
-  });
+  const res = await api.put(`/notes/${id}`, data, {});
   return res.data;
 };
 
 export const deleteNote = async (id: number) => {
-  const res = await api.delete(`/notes/${id}`, {
-    withCredentials: true,
-  });
+  const res = await api.delete(`/notes/${id}`, {});
   return res.data;
 };

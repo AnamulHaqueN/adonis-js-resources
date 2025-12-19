@@ -24,6 +24,7 @@ export default function Workspaces() {
   const [name, setName] = useState('')
   const [editingId, setEditingId] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
   const loadWorkspaces = async () => {
     const res = await getWorkspaces()
@@ -42,9 +43,16 @@ export default function Workspaces() {
 
   const handleCreate = async () => {
     if (!name.trim()) return
-    await createWorkspace({ name })
-    setName('')
-    loadWorkspaces()
+    setLoading(true)
+    try{
+      await createWorkspace({ name })
+      setName('')
+      await loadWorkspaces()
+    } catch(err) {
+      setError('Failed to create workspace')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleUpdate = async (workspace: Workspace) => {
@@ -52,11 +60,22 @@ export default function Workspaces() {
       setError("You're not allowed to update this workspace")
       return
     }
+    
+    if(!name.trim()) return
+    if(loading) return
 
-    await updateWorkspace(workspace.id, { name })
-    setName('')
-    setEditingId(null)
-    loadWorkspaces()
+    setLoading(true)
+    
+    try{
+      await updateWorkspace(workspace.id, { name })
+      setName('')
+      setEditingId(null)
+      await loadWorkspaces()
+    } catch(err) {
+      setError('Failed to update workspace')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleDelete = async (workspace: Workspace) => {

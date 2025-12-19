@@ -9,19 +9,18 @@ export default function CreateNote() {
   const [noteType, setNoteType] = useState<'public' | 'private'>('private')
   const [workspaceId, setWorkspaceId] = useState<number>(0)
   const [workspaces, setWorkspaces] = useState<Workspace[]>([])
+  const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
     await createNote({
       title,
       content,
       noteType,
       workspaceId,
     })
-
     navigate('/notes')
   }
   

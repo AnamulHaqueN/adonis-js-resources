@@ -5,6 +5,7 @@ export type NoteType = "public" | "private";
 export type Note = {
   upvotes: number;
   downvotes: number;
+  userVote?: "up" | "down"; // track user vote
   id: number;
   title: string;
   content: string;

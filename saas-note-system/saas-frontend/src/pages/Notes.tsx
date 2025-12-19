@@ -26,23 +26,37 @@ export default function Notes() {
   }
 
   const handleVote = async (id: number, type: 'up' | 'down') => {
-  try {
-    await voteNote(id, type)
+    const note = notes.find((n) => n.id === id);
+    if (!note) return;
+    if (note.userVote === type) return;
+
+    const updatedNote: Note = { ...note };
+
+    // Remove previous vote if exists
+    if (note.userVote === "up") updatedNote.upvotes -= 1;
+    if (note.userVote === "down") updatedNote.downvotes -= 1;
+
+    // Apply new vote
+    if (type === "up") updatedNote.upvotes += 1;
+    if (type === "down") updatedNote.downvotes += 1;
+
+    updatedNote.userVote = type;
+
+    // Optimistic UI update
     setNotes((prevNotes) =>
-      prevNotes.map((note) =>
-        note.id === id
-          ? {
-              ...note,
-              upvotes: type === 'up' ? (note.upvotes || 0) + 1 : note.upvotes,
-              downvotes: type === 'down' ? (note.downvotes || 0) + 1 : note.downvotes,
-            }
-          : note
-      )
-    )
-  } catch (error: any) {
-    alert(error.response?.data?.message || 'Error voting note')
+      prevNotes.map((n) => (n.id === id ? updatedNote : n))
+    );
+
+    try {
+      await voteNote(id, type);
+    } catch (error: any) {
+      alert(error.response?.data?.message || "Error voting note");
+      // rollback
+      setNotes((prevNotes) =>
+        prevNotes.map((n) => (n.id === id ? note : n))
+      );
+    }
   }
-}
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
@@ -113,12 +127,14 @@ export default function Notes() {
                   <>
                     <button
                       onClick={() => handleVote(note.id, 'up')}
+                      disabled={note.userVote === 'up'} // disable if already upvoted
                       className="text-green-600"
                     >
                       👍
                     </button>
                     <button
                       onClick={() => handleVote(note.id, 'down')}
+                      disabled={note.userVote === 'down'} // disable if already downvoted
                       className="text-red-600"
                     >
                       👎

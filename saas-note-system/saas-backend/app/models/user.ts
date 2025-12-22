@@ -1,0 +1,56 @@
+import { DateTime } from 'luxon'
+import hash from '@adonisjs/core/services/hash'
+import { compose } from '@adonisjs/core/helpers'
+import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
+import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
+import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
+import Company from './company.js'
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
+import Workspace from './workspace.js'
+
+const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
+  uids: ['email'],
+  passwordColumnName: 'password',
+})
+
+export default class User extends compose(BaseModel, AuthFinder) {
+  @column({ isPrimary: true })
+  declare id: number
+
+  @column({ serializeAs: null })
+  declare companyId: number
+
+  @column()
+  declare name: string | null
+
+  @column()
+  declare email: string
+
+  @column({ serializeAs: null })
+  declare password: string
+
+  // @column()
+  // declare confirmPassword: string
+
+  @column()
+  declare role: 'owner' | 'member'
+
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+
+  // Relations
+  @belongsTo(() => Company, { foreignKey: 'companyId' })
+  declare company: BelongsTo<typeof Company>
+
+  @hasMany(() => Workspace, { foreignKey: 'userId' })
+  declare workspace: HasMany<typeof Workspace>
+
+  static accessTokens = DbAccessTokensProvider.forModel(User)
+
+  public async verifyPassword(password: string) {
+    return hash.verify(this.password, password)
+  }
+}

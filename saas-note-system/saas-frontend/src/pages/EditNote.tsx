@@ -9,6 +9,8 @@ export default function EditNote() {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [noteType, setNoteType] = useState<'public' | 'private'>('private')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (id) {
@@ -24,9 +26,17 @@ export default function EditNote() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!id) return
+    if(loading) return
 
+    setLoading(true)
+    try{
     await updateNote(Number(id), { title, content, noteType })
     navigate('/notes')
+    } catch(error) {
+      setError('Failed to Edit note')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (

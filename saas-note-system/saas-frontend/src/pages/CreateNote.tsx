@@ -10,18 +10,27 @@ export default function CreateNote() {
   const [workspaceId, setWorkspaceId] = useState<number>(0)
   const [workspaces, setWorkspaces] = useState<Workspace[]>([])
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    await createNote({
-      title,
-      content,
-      noteType,
-      workspaceId,
-    })
-    navigate('/notes')
+    if(loading) return
+    setLoading(true)
+    try{
+      await createNote({
+        title,
+        content,
+        noteType,
+        workspaceId,
+      })
+      navigate('/notes')
+    } catch(err) {
+      setError('Failed to create note')
+    } finally{
+      setLoading(false)
+    }
   }
   
   useEffect(() => {

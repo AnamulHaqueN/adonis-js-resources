@@ -63,7 +63,7 @@ export default function Workspaces() {
     
     if(!name.trim()) return
     if(loading) return
-
+   
     setLoading(true)
     
     try{

@@ -73,7 +73,7 @@ export default function CreateNote() {
           <option value="private">Private</option>
           <option value="public">Public</option>
         </select>
-
+        {/* Check github */}
         {/* Workspace dropdown */}
         <select
           className="border w-full p-2 rounded"

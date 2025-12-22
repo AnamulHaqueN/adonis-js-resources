@@ -1,4 +1,5 @@
 import Workspace from '#models/workspace'
+import { paginationValidator } from '#validators/paginationValidator'
 import { WorkspaceValidator } from '#validators/workspacevalidator'
 import type { HttpContext } from '@adonisjs/core/http'
 
@@ -26,10 +27,14 @@ export default class WorkspacesController {
   }
 
   // List workspaces for user's company
-  public async index({ auth, response }: HttpContext) {
+  public async index({ auth, request, response }: HttpContext) {
+    const filter = await request.validateUsing(paginationValidator)
     try {
       const user = auth.user!
-      const workspaces = await Workspace.query().where('company_id', user.companyId)
+      const workspaces = await Workspace.query()
+        .where('company_id', user.companyId)
+        .orderBy(filter.sortBy ?? 'name', filter.orderBy ?? 'asc')
+        .paginate(filter.page ?? 1, filter.limit ?? 10)
       if (workspaces.length) {
         return {
           message: 'List of Workspaces',

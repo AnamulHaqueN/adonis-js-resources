@@ -1,6 +1,6 @@
 import Note from '#models/note'
 import Workspace from '#models/workspace'
-import { CreateNoteValidator } from '#validators/create_note'
+import { CreateNoteValidator, UpdateNoteValidator } from '#validators/create_note'
 import { HttpContext } from '@adonisjs/core/http'
 import { NoteType } from '../types/note.js'
 
@@ -41,7 +41,7 @@ export default class NotesController {
   }
 
   // SHOW single note
-  public async show({ params, auth, response }: HttpContext) {
+  public async show({ params, response }: HttpContext) {
     try {
       const note = await Note.query()
         .where('id', params.id)
@@ -62,25 +62,32 @@ export default class NotesController {
     }
   }
 
-  // Show list of Notes in a company based on user login
   public async list({ auth, response }: HttpContext) {
     try {
       await auth.authenticate()
       const user = auth.user!
 
+      // Fetch notes with upvote/downvote counts using a subquery
       const notes = await Note.query()
         .whereHas('workspace', (workspaceQuery) => {
           workspaceQuery.where('company_id', user.companyId)
         })
-        .preload('votes')
         .preload('workspace')
         .preload('creator')
         .preload('tags')
+        .preload('votes', (voteQuery) => {
+          voteQuery.select('note_id', 'vote')
+        })
 
-      // Map notes to include upvote and downvote count
-      const formatteNotes = notes.map((note) => {
-        const upvotes = note.votes.filter((v) => v.vote === 'up').length
-        const downvotes = note.votes.filter((v) => v.vote === 'down').length
+      // Map notes to include upvote/downvote count
+      const formattedNotes = notes.map((note) => {
+        let upvotes = 0
+        let downvotes = 0
+
+        for (const vote of note.votes) {
+          if (vote.vote === 'up') upvotes++
+          else if (vote.vote === 'down') downvotes++
+        }
 
         return {
           ...note.serialize(),
@@ -91,10 +98,7 @@ export default class NotesController {
 
       return response.ok({
         message: 'List of Notes',
-        notes: formatteNotes,
-        // message: notes.length ? 'List of Notes' : 'Notes is empty',
-
-        // notes: notes.map((note) => note.serialize()),
+        notes: formattedNotes,
       })
     } catch (error) {
       console.log(error)
@@ -106,6 +110,7 @@ export default class NotesController {
   public async update({ params, request, auth, response }: HttpContext) {
     try {
       const user = auth.user!
+      const payload = await request.validateUsing(UpdateNoteValidator)
 
       const note = await Note.find(params.id)
       if (!note) {
@@ -117,7 +122,8 @@ export default class NotesController {
         return response.forbidden({ message: 'You cannot edit this note' })
       }
 
-      note.merge(request.only(['title', 'content', 'noteType', 'isDraft']))
+      //note.merge(request.only(['title', 'content', 'noteType', 'isDraft']))
+      note.merge(payload)
       await note.save()
 
       return response.ok({

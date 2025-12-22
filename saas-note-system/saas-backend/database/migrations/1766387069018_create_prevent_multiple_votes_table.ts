@@ -1,17 +1,17 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'companies'
+  protected tableName = 'note_votes'
 
-  async up() {
+  public async up() {
     this.schema.alterTable(this.tableName, (table) => {
-      table.string('slug').notNullable().unique()
+      table.unique(['note_id', 'voter_user_id'])
     })
   }
 
-  async down() {
+  public async down() {
     this.schema.alterTable(this.tableName, (table) => {
-      table.dropColumn('slug')
+      table.dropUnique(['note_id', 'voter_user_id'])
     })
   }
 }

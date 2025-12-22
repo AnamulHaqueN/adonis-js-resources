@@ -25,7 +25,7 @@ export default class Note extends BaseModel {
   declare content: string
 
   @column({ columnName: 'note_type' })
-  declare noteType: NoteType
+  declare noteType: 'public' | 'private'
 
   @column({ columnName: 'is_draft' })
   declare isDraft: boolean
@@ -35,6 +35,12 @@ export default class Note extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+  
+  @column()
+  declare upvotes: number
+  
+  @column()
+  declare downvotes: number
 
   // Relations
   @belongsTo(() => Workspace, { foreignKey: 'workspaceId' })

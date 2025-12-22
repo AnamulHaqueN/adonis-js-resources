@@ -28,7 +28,8 @@ export default function Workspaces() {
 
   const loadWorkspaces = async () => {
     const res = await getWorkspaces()
-    setWorkspaces(res.workspaces)
+    console.log(res)
+    setWorkspaces(res.workspaces.data)
   }
 
   useEffect(() => {
@@ -48,7 +49,7 @@ export default function Workspaces() {
       await createWorkspace({ name })
       setName('')
       await loadWorkspaces()
-    } catch(err) {
+    } catch {
       setError('Failed to create workspace')
     } finally {
       setLoading(false)
@@ -71,7 +72,7 @@ export default function Workspaces() {
       setName('')
       setEditingId(null)
       await loadWorkspaces()
-    } catch(err) {
+    } catch {
       setError('Failed to update workspace')
     } finally {
       setLoading(false)

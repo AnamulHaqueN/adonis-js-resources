@@ -12,8 +12,13 @@ export type Workspace = {
   updatedAt: string;
 };
 
-export const getWorkspaces = async () => {
-  const res = await api.get("/workspaces");
+export const getWorkspaces = async (page = 1, limit = 10) => {
+  const res = await api.get("/workspaces", {
+    params: {
+      page,
+      limit,
+    },
+  });
   return res.data;
 };
 

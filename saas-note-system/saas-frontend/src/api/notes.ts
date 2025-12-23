@@ -16,8 +16,14 @@ export type Note = {
   updatedAt: string;
 };
 
-export const getNotes = async () => {
-  const res = await api.get("/notes", {});
+export const getNotes = async (page = 1, limit = 10) => {
+  const res = await api.get("/notes", {
+    params: {
+      page,
+      limit,
+    },
+  });
+  console.log("get notes ", res.data);
   return res.data;
 };
 

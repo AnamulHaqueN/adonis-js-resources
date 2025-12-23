@@ -3,6 +3,7 @@ import Workspace from '#models/workspace'
 import { CreateNoteValidator, UpdateNoteValidator } from '#validators/create_note'
 import { HttpContext } from '@adonisjs/core/http'
 import { NoteType } from '../types/note.js'
+import { paginationValidator } from '#validators/paginationValidator'
 
 export default class NotesController {
   public async store({ auth, request, response }: HttpContext) {
@@ -62,43 +63,34 @@ export default class NotesController {
     }
   }
 
-  public async list({ auth, response }: HttpContext) {
+  public async list({ auth, request, response }: HttpContext) {
     try {
       await auth.authenticate()
       const user = auth.user!
+
+      const filter = await request.validateUsing(paginationValidator)
 
       // Fetch notes with upvote/downvote counts using a subquery
       const notes = await Note.query()
         .whereHas('workspace', (workspaceQuery) => {
           workspaceQuery.where('company_id', user.companyId)
         })
+        .if(user, (query) => {
+          query.where((q) => {
+            q.where('note_type', 'public').orWhere('user_id', user.id)
+          })
+        })
         .preload('workspace')
         .preload('creator')
-        .preload('tags')
-        .preload('votes', (voteQuery) => {
-          voteQuery.select('note_id', 'vote')
-        })
+        .preload('votes', (v) => v.where('voter_user_id', user.id).first())
+        .orderBy(filter.sortBy ?? 'title', filter.orderBy ?? 'asc')
+        .paginate(filter.page ?? 1, filter.limit ?? 10)
 
-      // Map notes to include upvote/downvote count
-      const formattedNotes = notes.map((note) => {
-        let upvotes = 0
-        let downvotes = 0
-
-        for (const vote of note.votes) {
-          if (vote.vote === 'up') upvotes++
-          else if (vote.vote === 'down') downvotes++
-        }
-
-        return {
-          ...note.serialize(),
-          upvotes,
-          downvotes,
-        }
-      })
+      //console.log('sdfsd', notes)
 
       return response.ok({
         message: 'List of Notes',
-        notes: formattedNotes,
+        notes: notes,
       })
     } catch (error) {
       console.log(error)

@@ -13,7 +13,7 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('users')
         .onDelete('CASCADE')
-
+      table.unique(['note_id', 'voter_user_id'])
       table.enum('vote', ['up', 'down']).notNullable()
       table.timestamp('created_at')
       table.timestamp('updated_at')

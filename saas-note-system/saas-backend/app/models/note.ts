@@ -5,7 +5,6 @@ import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relat
 import NoteHistory from './note_history.js'
 import Tag from './tag.js'
 import User from './user.js'
-import type { NoteType } from '../types/note.js'
 import NoteVote from './note_vote.js'
 
 export default class Note extends BaseModel {
@@ -35,10 +34,10 @@ export default class Note extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
-  
+
   @column()
   declare upvotes: number
-  
+
   @column()
   declare downvotes: number
 

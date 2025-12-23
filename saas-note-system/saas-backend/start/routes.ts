@@ -54,4 +54,4 @@ router
   .use(middleware.auth())
 
 // Votes count
-router.post('/notes/:id/vote', [NoteVotesController, 'vote']).use(middleware.auth())
+router.post('/notes/:noteId/vote', [NoteVotesController, 'vote']).use(middleware.auth())

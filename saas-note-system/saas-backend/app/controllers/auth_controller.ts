@@ -9,7 +9,8 @@ export default class AuthController {
   public async register({ request, response, auth }: HttpContext) {
     try {
       const payload = await request.validateUsing(RegisterValidator)
-      const domain = request.hostname()
+      // const domain = request.hostname()
+      const domain = 'Moore and Sons'
 
       console.log(domain)
       const company = await Company.findBy('name', domain)

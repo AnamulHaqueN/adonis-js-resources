@@ -50,6 +50,17 @@ export default class WorkspacesController {
     }
   }
 
+  public async workspaceList({ auth, response }: HttpContext) {
+    try {
+      const user = auth.user!
+      const workspaces = await Workspace.query().where('company_id', user.companyId)
+
+      return workspaces
+    } catch (error) {
+      return response.unauthorized('Not authenticated.')
+    }
+  }
+
   // Update workspace - only creator OR company owner can update
 
   public async update({ auth, request, params, response }: HttpContext) {

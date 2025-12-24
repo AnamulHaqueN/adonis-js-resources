@@ -36,6 +36,7 @@ router
   .group(() => {
     router.post('', [WorkspacesController, 'store'])
     router.get('', [WorkspacesController, 'index'])
+    router.get('/list', [WorkspacesController, 'workspaceList'])
     router.put('/:id', [WorkspacesController, 'update'])
     router.delete('/:id', [WorkspacesController, 'destroy'])
   })

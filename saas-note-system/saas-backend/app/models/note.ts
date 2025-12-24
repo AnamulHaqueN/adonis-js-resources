@@ -52,7 +52,7 @@ export default class Note extends BaseModel {
   public tags!: ManyToMany<typeof Tag>
 
   @hasMany(() => NoteVote)
-  public votes!: HasMany<typeof NoteVote>
+  declare votes: HasMany<typeof NoteVote>
 
   @hasMany(() => NoteHistory)
   public history!: HasMany<typeof NoteHistory>

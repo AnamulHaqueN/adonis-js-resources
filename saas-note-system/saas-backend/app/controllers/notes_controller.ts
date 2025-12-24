@@ -82,11 +82,9 @@ export default class NotesController {
         })
         .preload('workspace')
         .preload('creator')
-        .preload('votes', (v) => v.where('voter_user_id', user.id).first())
+        .preload('votes', (v) => v.where('voter_user_id', user.id))
         .orderBy(filter.sortBy ?? 'title', filter.orderBy ?? 'asc')
         .paginate(filter.page ?? 1, filter.limit ?? 10)
-
-      //console.log('sdfsd', notes)
 
       return response.ok({
         message: 'List of Notes',

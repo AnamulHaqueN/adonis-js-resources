@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getNotes, deleteNote, type Note } from "../api/notes";
+import { getNotes, deleteNote, type Note, type VoteStatus } from "../api/notes";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
 import { createVotes } from "../api/notesVote";
@@ -19,7 +19,7 @@ export default function Notes() {
 
   const loadNotes = async (pageNumber = page) => {
     const res = await getNotes(pageNumber, limit);
-    console.log(res.notes.data[0].downvotes);
+    // console.log(res.notes.data[0].downvotes);
     setLoading(true);
     try {
       setNotes(res.notes.data || []);
@@ -45,9 +45,17 @@ export default function Notes() {
     loadNotes(1);
   };
 
-  const handleVote = async (noteId: number, voteType: "up" | "down") => {
+  const handleVote = async (
+    votes: VoteStatus[],
+    noteId: number,
+    voteType: "up" | "down"
+  ) => {
     if (loading) return;
     setLoading(true);
+    if (votes[0].voterUserId === noteId && votes[0].vote === voteType) {
+      setLoading(false);
+      return;
+    }
     try {
       const res = await createVotes(noteId, voteType);
       loadNotes(page);
@@ -57,7 +65,7 @@ export default function Notes() {
     }
   };
 
-  console.log(notes);
+  //console.log("show notes info", notes[0]);
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <div className="flex justify-between items-center mb-6">
@@ -129,13 +137,13 @@ export default function Notes() {
                 {canVote && (
                   <>
                     <button
-                      onClick={() => handleVote(note.id, "up")}
+                      onClick={() => handleVote(note.votes, note.id, "up")}
                       className="text-green-600"
                     >
                       👍
                     </button>
                     <button
-                      onClick={() => handleVote(note.id, "down")}
+                      onClick={() => handleVote(note.votes, note.id, "down")}
                       className="text-red-600"
                     >
                       👎

@@ -3,13 +3,18 @@ import api from "./axios";
 export type WorkspacePayload = {
   name: string;
 };
-export type Workspace = {
+
+export interface WorkspaceData {
   id: number;
   companyId: number;
   userId: number;
   name: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export type Workspace = {
+  data: WorkspaceData[];
 };
 
 export const getWorkspaces = async (page = 1, limit = 10) => {
@@ -22,6 +27,10 @@ export const getWorkspaces = async (page = 1, limit = 10) => {
   return res.data;
 };
 
+export const listWorkspace = async (): Promise<WorkspaceData[]> => {
+  const res = await api.get("/workspaces/list");
+  return res.data;
+};
 // CREATE workspace
 export const createWorkspace = async (data: WorkspacePayload) => {
   const res = await api.post("/workspaces", data);

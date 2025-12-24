@@ -1,17 +1,24 @@
 import api from "./axios";
 
 export type NoteType = "public" | "private";
+type VoteType = "up" | "down";
+
+export interface VoteStatus {
+  voterUserId: number;
+  vote: VoteType;
+}
 
 export type Note = {
   upvotes: number;
   downvotes: number;
-  userVote?: "up" | "down"; // track user vote
+  userVote?: VoteType; // track user vote
   id: number;
   title: string;
   content: string;
   noteType: NoteType;
   workspaceId: number;
   userId: number;
+  votes: VoteStatus[];
   createdAt: string;
   updatedAt: string;
 };

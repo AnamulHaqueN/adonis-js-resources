@@ -21,20 +21,32 @@ export default function NoteDetails() {
   const { id } = useParams();
   const [note, setNote] = useState<Note | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!id) return;
+    const fetchNote = async () => {
+      setLoading(true);
+      setNote(null);
 
-    getNoteById(Number(id))
-      .then((res) => {
-        setNote(res.note ?? res.data ?? res);
-      })
-      .catch(() => setNote(null))
-      .finally(() => setLoading(false));
+      try {
+        const res = await getNoteById(Number(id));
+        setNote(res);
+      } catch (err: any) {
+        console.error(err);
+
+        const message = err?.response?.data?.message || "Something wrong";
+        setError(message);
+        setNote(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNote();
   }, [id]);
 
   if (loading) return <p className="p-6">Loading...</p>;
-  if (!note) return <p className="p-6 text-red-500">Note not found</p>;
+  if (!note) return <p className="p-6 text-red-500">{error}</p>;
 
   return (
     <div className="p-6 max-w-3xl mx-auto">

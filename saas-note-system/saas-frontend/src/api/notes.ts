@@ -34,8 +34,9 @@ export const getNotes = async (page = 1, limit = 10) => {
   return res.data;
 };
 
-export const getNoteById = async (id: number) => {
+export const getNoteById = async (id: number): Promise<Note> => {
   const res = await api.get(`/notes/${id}`, {});
+  console.log(res);
   return res.data;
 };
 

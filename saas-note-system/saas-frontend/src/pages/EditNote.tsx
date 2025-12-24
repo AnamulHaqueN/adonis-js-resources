@@ -1,43 +1,42 @@
-import { useEffect, useState } from 'react'
-import { getNoteById, updateNote } from '../api/notes'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useEffect, useState } from "react";
+import { getNoteById, updateNote } from "../api/notes";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function EditNote() {
-  const { id } = useParams()
-  const navigate = useNavigate()
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-  const [noteType, setNoteType] = useState<'public' | 'private'>('private')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [noteType, setNoteType] = useState<"public" | "private">("private");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (id) {
-      getNoteById(Number(id)).then((res) => {
-        const note = res.note
-        setTitle(note.title)
-        setContent(note.content)
-        setNoteType(note.noteType)
-      })
+      getNoteById(Number(id)).then((note) => {
+        setTitle(note.title);
+        setContent(note.content);
+        setNoteType(note.noteType);
+      });
     }
-  }, [id])
+  }, [id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!id) return
-    if(loading) return
+    e.preventDefault();
+    if (!id) return;
+    if (loading) return;
 
-    setLoading(true)
-    try{
-    await updateNote(Number(id), { title, content, noteType })
-    navigate('/notes')
-    } catch(error) {
-      setError('Failed to Edit note')
+    setLoading(true);
+    try {
+      await updateNote(Number(id), { title, content, noteType });
+      navigate("/notes");
+    } catch (error) {
+      setError("Failed to Edit note");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="p-6 max-w-xl mx-auto">
@@ -70,5 +69,5 @@ export default function EditNote() {
         </button>
       </form>
     </div>
-  )
+  );
 }

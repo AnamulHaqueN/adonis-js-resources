@@ -42,10 +42,14 @@ export default class NotesController {
   }
 
   // SHOW single note
-  public async show({ params, response }: HttpContext) {
+  public async show({ params, auth, response }: HttpContext) {
     try {
+      const user = auth.user!
       const note = await Note.query()
         .where('id', params.id)
+        .whereHas('workspace', (w) => {
+          w.where('company_id', user.companyId)
+        })
         .preload('creator')
         .preload('workspace')
         .preload('tags')
@@ -54,7 +58,9 @@ export default class NotesController {
       if (!note) {
         return response.notFound({ message: 'Note not found' })
       }
-
+      if (note.userId !== user.id && note.noteType === 'private') {
+        return response.status(403).json({ message: "You\'re not allowed to access this note" })
+      }
       // Optional: restrict private notes later
       return response.ok(note.serialize())
     } catch (error) {
